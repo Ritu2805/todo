@@ -1,13 +1,23 @@
-//require the just installed express app
-var express = require('express');
-//then we call express
-var app = express();
-//takes us to the root(/) URL
-app.get('/', function (req, res) {
-//when we visit the root URL express will respond with 'Hello World'
-  res.send('Hello World!');
-});
-//the server is listening on port 3000 for connections
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!')
-});
+require( 'dotenv' ).config();
+// Initialize DB Connection
+require( './config/database' );
+
+const config = require( './config/config' ).getConfig(),
+    PORT = config.PORT;
+
+console.log( '✔ Bootstrapping Application' );
+console.log( `✔ Mode: ${config.MODE}` );
+console.log( `✔ Port: ${PORT}` );
+
+const { server } = require( './config/server' );
+
+server.listen( PORT ).on( 'error', ( err ) => {
+    console.log( '✘ Application failed to start' );
+    console.error( '✘', err.message );
+    process.exit( 0 );
+} ).on( 'listening', () => {
+    console.log( '✔ Application Started' );
+} );
+
+
+module.exports = { server };
